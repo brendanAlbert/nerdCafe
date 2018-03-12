@@ -10,7 +10,7 @@ import subprocess as sub
 import os
 
 
-class InventoryManager():
+class InventoryManager:
     """
     InventoryManager will manage the Ingredients classes.
     Functionality:
@@ -515,7 +515,7 @@ class InventoryManager():
 #     #my_manager.clean_kitchen("liquids.csv", "meats.csv", "produce.csv", "15/03/18")
 #     #my_manager.print_all_ingredients()
 #     ####### test open_excel
-#     my_manager.open_excel("meats.csv")
-
+#     #my_manager.open_excel("meats.csv")
+#
 # if __name__ == "__main__":
 #     main()

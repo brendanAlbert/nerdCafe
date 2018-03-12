@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk, messagebox
 from Staff import Staff
+from inventory_manager import InventoryManager
 
 window = Tk()
 window.title("Coffee Geeks Cafe")
@@ -301,11 +302,11 @@ def on_mgr_dbl(e):
     text.pack()
 
 
-def display_footer():
-    footer_frame = LabelFrame(tab1)
-    footer_frame.grid(column=1, columnspan=2, row=9, pady=20)
+def display_footer(tab):
+    footer_frame = LabelFrame(tab)
+    footer_frame.grid(column=1, columnspan=2, ipadx=20, row=9, pady=20, sticky='ew')
     made_by_label = Label(footer_frame, text="Coded with ❤️ by the fine folks @ ¯\_(ツ)_/¯", pady=10)
-    made_by_label.grid(column=0, row=0)
+    made_by_label.grid(column=0, row=0, sticky='ew')
 
 
 """ 
@@ -319,14 +320,60 @@ def display_footer():
 
 """
 
-# TAB 2
+#### Start of TAB 2, Inventory Manager ######
+
+
 tab2 = ttk.Frame(tab_control)
 tab_control.add(tab2, text="Inventory Manager")
 
 lbl2 = Label(tab2, text='Inventory', font=("Courier", 30), padx=10, pady=10)
-lbl2.grid(column=0, row=0)
+lbl2.grid(column=0, row=0, sticky='w')
 tab_control.tab(tab2, padding=10)
 
 tab_control.pack(expand=1, fill='both')
-display_footer()
+
+
+## Inventory Manager Object
+inventory_mgr = InventoryManager()
+inventory_mgr.upload_produce_csv("produce.csv")
+inventory_mgr.upload_liquid_csv("liquids.csv")
+
+
+#### Tab 2 Functions ###
+
+
+def view_produce():
+    inventory_listbox.delete(0, END)
+    for fruit_veg in inventory_mgr._produce:
+        inventory_listbox.insert(END, fruit_veg)
+
+
+def view_liquids():
+    inventory_listbox.delete(0, END)
+    for liquid in inventory_mgr._liquids:
+        inventory_listbox.insert(END, liquid)
+
+
+## SETUP Listbox ###
+inventory_listbox = Listbox(tab2, height=20, width=60)
+inventory_listbox.grid(column=0, columnspan=10, row=2, sticky='news', pady=20)
+
+
+### Setup Inventory Manager Buttons
+
+produce_btn = ttk.Button(tab2, text="View Produce", command=view_produce)
+produce_btn.grid(column=0, row=1, sticky='w', pady=10)
+
+liquids_btn = ttk.Button(tab2, text="View Liquids", command=view_liquids)
+liquids_btn.grid(column=1, row=1, sticky='w', pady=10)
+
+display_footer(tab2)
+
+##### End of TAB 2, Inventory Manager Tab ########
+
+
+
+##### display footer and run app
+
+display_footer(tab1)
 window.mainloop()
