@@ -69,13 +69,3 @@ class Staff:
         :return:
         """
         self._hours_worked += hours
-
-
-# REMOVE EVERYTHING BELOW THIS XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-def main():
-    s = Staff("Vincent", 12345, 1.5)
-    print(s.get_name())
-    print(s.get_date_hired())
-
-
-main()
