@@ -112,6 +112,7 @@ class Meats(Ingredients):
         Param: 1 string, date of purchase in the format "DD/MM/YY"
         """
         super().__init__(meat, ounces)
+        self._purchase = date
         self._expiration = self.set_expiration(date)
 
     def set_expiration(self, purchase_date):
@@ -121,6 +122,9 @@ class Meats(Ingredients):
             (str((int(purchase_date[0] + purchase_date[1]) + 3)%30) + "/01/" + str(int(purchase_date[6:]) +1))
         else:
             return (str((int(purchase_date[0] + purchase_date[1]) + 3)%30) + "/" + str(int(purchase_date[3:5]) + 1) + purchase_date[5:])
+
+    def get_purchase(self):
+        return self._purchase
 
     def get_expiration(self):
         return self._expiration
@@ -143,6 +147,7 @@ class Produce(Ingredients):
         """
         super().__init__(name, grams)
         self._expiration = self.set_expiration(date)
+        self._purchase = date
 
     def set_expiration(self, purchase_date):
         if (int(purchase_date[0] + purchase_date[1]) < 24):
@@ -151,6 +156,9 @@ class Produce(Ingredients):
             (str((int(purchase_date[0] + purchase_date[1]) + 7)%30) + "/01/" + str(int(purchase_date[6:]) +1))
         else:
             return (str((int(purchase_date[0] + purchase_date[1]) + 7)%30) + "/" + str(int(purchase_date[3:5]) + 1) + purchase_date[5:])
+
+    def get_purchase(self):
+        return self._purchase
 
     def get_expiration(self):
         return self._expiration
