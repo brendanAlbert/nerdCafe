@@ -41,13 +41,13 @@ def date_diff(fname, colname1, colname2):
             #print(row)
             name=row["Ingredient"]
             ingredients[name]=shelflife
-            print("name =", name, "startdate =",startdate, "enddate =", enddate,  "shelflife=" , shelflife)
+            #print("name =", name, "startdate =",startdate, "enddate =", enddate,  "shelflife=" , shelflife)
 
     with open("shelflife.csv",'w',newline='') as f:
         headers=["Ingredient","Shelf Life"]
         writer=csv.DictWriter(f, headers)
         writer.writeheader()
-        print("ingredients = ",ingredients)
+        #print("ingredients = ",ingredients)
         for name, shelflife in ingredients.items():
             writer.writerow({"Ingredient":name,"Shelf Life":shelflife})
 
