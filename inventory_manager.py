@@ -484,9 +484,9 @@ class InventoryManager():
         opens a CSV file in excel if the os is windows, and in open office if Linux.
         """
         if os.name == "nt":
-            p = Popen(fname, shell=True)
+            res = sub.run(['cmd', '/c', 'start', fname])
         elif os.name == "posix":
-            p = sub.run(["openoffice", fname])
+            res = sub.run(["openoffice", fname])
 
 # def main():
 #     my_manager = InventoryManager()
