@@ -69,3 +69,6 @@ class Staff:
         :return:
         """
         self._hours_worked += hours
+
+    def get_fields_as_list(self):
+        return [self._name, self._id, self._wage_rate, self._date_hired, self._hours_worked, self._overtime_hours, self._sick_days_available, self._is_manager]
