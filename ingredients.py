@@ -12,7 +12,7 @@ class Ingredients():
         Param: 1 int, ingredient amount
         """
         self._name = name
-        self._amount = amount
+        self._amount = int(amount)
 
     def set_amount(self, new_amount):
         """
@@ -30,13 +30,21 @@ class Ingredients():
         """
         return self._amount
 
+    def get_name(self):
+        """
+        Gets the name of the ingredient.
+
+        Returns: string, the ingrdient name.
+        """
+        return self._name
+
     def __str__(self):
         """
         The to_string method of this class.
 
         Returns: an identifying string with the ingredient name and amount.
         """
-        return "Ingredient: {}, Amount: {}".format(self._name, self._amount)
+        return "Ingredient: {}, Amount: {}".format(self._name, str(self._amount))
 
 
 class DryGoods(Ingredients):
