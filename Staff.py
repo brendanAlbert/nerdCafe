@@ -2,9 +2,13 @@ from datetime import datetime
 
 
 class Staff:
-    def __init__(self, name, id, wage_rate):
+
+    __id = 100
+
+    def __init__(self, name, wage_rate):
         self._name = name  # str
-        self._id = id  # int
+        Staff.__id += 1
+        self._id = self.__id  # int
         self._wage_rate = wage_rate
         self._date_hired = datetime.now().strftime("%d/%m/%y")
         self._hours_worked = 0  # Float
@@ -70,5 +74,5 @@ class Staff:
         """
         self._hours_worked += hours
 
-    def get_fields_as_list(self):
-        return [self._name, self._id, self._wage_rate, self._date_hired, self._hours_worked, self._overtime_hours, self._sick_days_available, self._is_manager]
+    def __str__(self):
+        return f"id# {self._id}, {self._name}"
