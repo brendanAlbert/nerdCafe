@@ -40,7 +40,6 @@ def main():
             with open(staff_file, 'a', newline="") as f:
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
 
-                # writer.writerow()
 
 
         elif choice == "3":
