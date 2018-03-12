@@ -9,6 +9,7 @@ import ingredients as ing
 import subprocess as sub
 import os
 
+
 class InventoryManager():
     """
     InventoryManager will manage the Ingredients classes.
@@ -20,21 +21,22 @@ class InventoryManager():
     -view a CSV file of the ingredients
     -Add new ingredients: use regular expressions to validate entries for new ingredients
     """
+
     def __init__(self):
         """
         Creates an instance of an InventoryManager
         """
         self._ingredients_count = 0
-        #lets make a list of drygood objects
+        # lets make a list of drygood objects
         self._drygoods = []
 
-        #lets make a list of liquid objects
+        # lets make a list of liquid objects
         self._liquids = []
 
-        #lets make a list of meat objects
+        # lets make a list of meat objects
         self._meat = []
 
-        #lets make a list of drygood objects
+        # lets make a list of drygood objects
         self._produce = []
 
     def get_ingredients_count(self):
@@ -51,7 +53,7 @@ class InventoryManager():
 
         Returns: int, the number of drygoods
         """
-        return (len(self._drygoods))
+        return len(self._drygoods)
 
     def get_liquids_count(self):
         """
@@ -59,7 +61,7 @@ class InventoryManager():
 
         Returns: int, the number of liquids
         """
-        return (len(self._liquids))
+        return len(self._liquids)
 
     def get_meats_count(self):
         """
@@ -67,7 +69,7 @@ class InventoryManager():
 
         Returns: int, the amount of meat
         """
-        return (len(self._meat))
+        return len(self._meat)
 
     def get_produce_count(self):
         """
@@ -75,7 +77,7 @@ class InventoryManager():
 
         Returns: int, the number of produce
         """
-        return (len(self._produce))
+        return len(self._produce)
 
     def upload_drygood_csv(self, fname):
         """
@@ -83,24 +85,24 @@ class InventoryManager():
 
         Param: fname, the string of the cvs file name.
         """
-        #make sure you can open the file
+        # make sure you can open the file
         try:
-            with open(fname, "r", newline = "") as f:
+            with open(fname, "r", newline="") as f:
                 reader = csv.DictReader(f)
 
                 for row in reader:
                     if reader.line_num == 1:
-                        #skip first line
+                        # skip first line
                         continue
 
-                    #create a drygoods object for every entry
+                    # create a drygoods object for every entry
                     type = row["Ingredient"]
                     grams = row["Amount"]
                     self._drygoods.append(ing.DryGoods(type, grams))
                     # keep track of how many ingredients we have
                     self._ingredients_count += 1
-        except EnvironmentError: # parent of IOError, OSError and WindowsError where available
-            print ("Error: {} could not be found.".format(fname))
+        except EnvironmentError:  # parent of IOError, OSError and WindowsError where available
+            print("Error: {} could not be found.".format(fname))
 
     def new_drygood(self, fname, new_item, new_amount):
         """
@@ -111,11 +113,11 @@ class InventoryManager():
         Param: new_item, string name of new entry
         Param: new_amount, int quantity
         """
-        #make sure the new_amount is a positive integer
+        # make sure the new_amount is a positive integer
         if str(new_amount).isdigit():
             with open(fname, "a+", newline="") as f:
                 self._drygoods.append(ing.DryGoods(new_item, new_amount))
-                f.write(new_item +"," + str(new_amount) +"\n")
+                f.write(new_item + "," + str(new_amount) + "\n")
         else:
             print("Error: Please make sure to enter a positive integer for the quantity")
 
@@ -127,19 +129,19 @@ class InventoryManager():
         Param: item, a string of the item name
         Param: amount, an int of the amount to add
         """
-        #make a flag to make sure the name IS in our list
+        # make a flag to make sure the name IS in our list
         is_found = False
 
-        #make sure the amount is a pos number. data validation.
+        # make sure the amount is a pos number. data validation.
         if str(amount).isdigit():
             for each in self._drygoods:
-                #find the item in the list
+                # find the item in the list
                 if each.get_name().lower() == item.lower():
                     is_found = True
-                    #change the amount for the object
+                    # change the amount for the object
                     each.increase_amt(amount)
 
-                    #Rewrite the file to update
+                    # Rewrite the file to update
                     try:
                         with open(fname, "r", newline="") as f:
                             reader = csv.DictReader(f)
@@ -153,10 +155,10 @@ class InventoryManager():
                                 if row["Ingredient"].lower() == item.lower():
                                     row["Amount"] = str(int(row["Amount"]) + amount)
                                 writer.writerow(row)
-                    except EnvironmentError: # parent of IOError, OSError and WindowsError where available
-                        print ("Error: {} could not be found.".format(fname))
+                    except EnvironmentError:  # parent of IOError, OSError and WindowsError where available
+                        print("Error: {} could not be found.".format(fname))
 
-            if (not is_found):
+            if not is_found:
                 print("Error: {} is not in the list of dry goods.".format(item))
 
         else:
@@ -169,23 +171,23 @@ class InventoryManager():
         Param: fname, the string of the cvs file name.
         """
         try:
-            with open(fname, "r", newline = "") as f:
+            with open(fname, "r", newline="") as f:
                 reader = csv.DictReader(f)
 
                 for row in reader:
                     if reader.line_num == 1:
-                        #skip first line
+                        # skip first line
                         continue
 
-                    #create a drygoods object for every entry
+                    # create a drygoods object for every entry
                     bottle = row["Ingredient"]
                     ounces = row["Amount"]
                     expiration = row["Expiration Date"]
                     self._liquids.append(ing.Liquids(bottle, ounces, expiration))
                     # keep track of how many ingredients we have
                     self._ingredients_count += 1
-        except EnvironmentError: # parent of IOError, OSError and WindowsError where available
-            print ("Error: {} could not be found.".format(fname))
+        except EnvironmentError:  # parent of IOError, OSError and WindowsError where available
+            print("Error: {} could not be found.".format(fname))
 
     def new_liquid(self, fname, new_item, new_amount, new_expiration):
         """
@@ -203,7 +205,7 @@ class InventoryManager():
             if re.match(r"\d\d/\d\d/\d\d", new_expiration):
                 with open(fname, "a+", newline="") as f:
                     self._liquids.append(ing.Liquids(new_item, new_amount, new_expiration))
-                    f.write(new_item +"," + str(new_amount) + "," + new_expiration +"\n")
+                    f.write(new_item + "," + str(new_amount) + "," + new_expiration + "\n")
             else:
                 print("Error: Please enter expiration date in the format \"DD/MM/YY\"")
         else:
@@ -216,23 +218,23 @@ class InventoryManager():
         Param: fname, the string of the cvs file name.
         """
         try:
-            with open(fname, "r", newline = "") as f:
+            with open(fname, "r", newline="") as f:
                 reader = csv.DictReader(f)
 
                 for row in reader:
                     if reader.line_num == 1:
-                        #skip first line
+                        # skip first line
                         continue
 
-                    #create a drygoods object for every entry
+                    # create a drygoods object for every entry
                     type = row["Ingredient"]
                     ounces = row["Amount"]
                     date = row["Purchase Date"]
                     self._meat.append(ing.Meats(type, ounces, date))
                     # keep track of how many ingredients we have
                     self._ingredients_count += 1
-        except EnvironmentError: # parent of IOError, OSError and WindowsError where available
-            print ("Error: {} could not be found.".format(fname))
+        except EnvironmentError:  # parent of IOError, OSError and WindowsError where available
+            print("Error: {} could not be found.".format(fname))
 
     def new_meat(self, fname, new_item, new_amount, new_purchase_date):
         """
@@ -251,8 +253,8 @@ class InventoryManager():
                 with open(fname, "a+", newline="") as f:
                     this_meat = ing.Meats(new_item, new_amount, new_purchase_date)
                     self._meat.append(this_meat)
-                    f.write(new_item +"," + str(new_amount) + "," + new_purchase_date +
-                    "," + this_meat.get_expiration() + "\n")
+                    f.write(new_item + "," + str(new_amount) + "," + new_purchase_date +
+                            "," + this_meat.get_expiration() + "\n")
             else:
                 print("Error: Please enter purchase date in the format \"DD/MM/YY\"")
         else:
@@ -265,23 +267,23 @@ class InventoryManager():
         Param: fname, the string of the cvs file name.
         """
         try:
-            with open(fname, "r", newline = "") as f:
+            with open(fname, "r", newline="") as f:
                 reader = csv.DictReader(f)
 
                 for row in reader:
                     if reader.line_num == 1:
-                        #skip first line
+                        # skip first line
                         continue
 
-                    #create a drygoods object for every entry
+                    # create a drygoods object for every entry
                     name = row["Ingredient"]
                     grams = row["Amount"]
                     date = row["Purchase Date"]
                     self._produce.append(ing.Produce(name, grams, date))
                     # keep track of how many ingredients we have
                     self._ingredients_count += 1
-        except EnvironmentError: # parent of IOError, OSError and WindowsError where available
-            print ("Error: {} could not be found.".format(fname))
+        except EnvironmentError:  # parent of IOError, OSError and WindowsError where available
+            print("Error: {} could not be found.".format(fname))
 
     def new_produce(self, fname, new_item, new_amount, new_purchase_date):
         """
@@ -300,8 +302,8 @@ class InventoryManager():
                 with open(fname, "a+", newline="") as f:
                     this_produce = ing.Produce(new_item, new_amount, new_purchase_date)
                     self._produce.append(this_produce)
-                    f.write(new_item +"," + str(new_amount) + "," + new_purchase_date +
-                    "," + this_produce.get_expiration() + "\n")
+                    f.write(new_item + "," + str(new_amount) + "," + new_purchase_date +
+                            "," + this_produce.get_expiration() + "\n")
             else:
                 print("Error: Please enter purchase date in the format \"DD/MM/YY\"")
         else:
@@ -315,9 +317,9 @@ class InventoryManager():
         Param: fname_meats, string for meats csv file name
         Param: fname_produce, string for produce csv file name
         """
-        #validate date is in correct format "##/##/##"
+        # validate date is in correct format "##/##/##"
         if re.match(r"\d\d/\d\d/\d\d", date):
-            #make list of indicies to delete
+            # make list of indicies to delete
             i = 0
             liq_list = []
 
@@ -352,14 +354,14 @@ class InventoryManager():
             for each in reversed(produce_list):
                 self._produce.pop(each)
 
-            #rewrite CSV files to reflect changes
+            # rewrite CSV files to reflect changes
             self.rewrite_liquids_csv(fname_liquids, "Ingredient,Amount,Expiration Date\n")
             self.rewrite_meats_csv(fname_meats, "Ingredient,Amount,Purchase Date,Expiration Date\n")
             self.rewrite_produce_csv(fname_produce, "Ingredient,Amount,Purchase Date,Expiration Date\n")
         else:
             print("Error: Please enter today's date in the format \"DD/MM/YY\"")
 
-    def _is_old(self,date,expir_date):
+    def _is_old(self, date, expir_date):
         """
         Helper Functon for clean_kitchen.
         
@@ -375,10 +377,7 @@ class InventoryManager():
             if int(expir_date[3:5]) > int(date[3:5]):
                 return False
             elif int(expir_date[3:5]) == int(date[3:5]):
-                if int(expir_date[0:2]) >= int(date[0:2]):
-                    return False
-                else:
-                    return True
+                return int(expir_date[0:2]) < int(date[0:2])
             else:
                 return True
         else:
@@ -396,7 +395,7 @@ class InventoryManager():
             f.write(headers)
 
             for each in self._drygoods:
-                writer.writerow([each.get_name(),str(each.get_amount())])
+                writer.writerow([each.get_name(), str(each.get_amount())])
 
     def rewrite_liquids_csv(self, fname, headers):
         """
@@ -410,7 +409,7 @@ class InventoryManager():
             f.write(headers)
 
             for each in self._liquids:
-                writer.writerow([each.get_name(),str(each.get_amount()),each.get_expiration()])
+                writer.writerow([each.get_name(), str(each.get_amount()), each.get_expiration()])
 
     def rewrite_meats_csv(self, fname, headers):
         """
@@ -424,7 +423,7 @@ class InventoryManager():
             f.write(headers)
 
             for each in self._meat:
-                writer.writerow([each.get_name(),str(each.get_amount()),each.get_purchase(),each.get_expiration()])
+                writer.writerow([each.get_name(), str(each.get_amount()), each.get_purchase(), each.get_expiration()])
 
     def rewrite_produce_csv(self, fname, headers):
         """
@@ -438,7 +437,7 @@ class InventoryManager():
             f.write(headers)
 
             for each in self._produce:
-                writer.writerow([each.get_name(),str(each.get_amount()),each.get_purchase(),each.get_expiration()])
+                writer.writerow([each.get_name(), str(each.get_amount()), each.get_purchase(), each.get_expiration()])
 
     def print_all_ingredients(self):
         """

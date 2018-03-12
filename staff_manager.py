@@ -8,7 +8,6 @@ window.geometry('600x600')
 
 tab_control = ttk.Notebook(window)
 
-
 global txt_input
 global staff_menu
 
@@ -18,10 +17,11 @@ pure_apple = "#6ab04c"
 
 style = ttk.Style()
 
-style.theme_create( "tabtheme", parent="alt", settings={
+style.theme_create("tabtheme", parent="alt", settings={
     "TNotebook": {"configure": {"tabmargins": [2, 5, 2, 0]}},
     "TNotebook.Tab": {
-        "configure": {"padding": [45, 8], "background": mintleaf}, # the 45 and 8 represent the width and height of the tab's padding
+        "configure": {"padding": [45, 8], "background": mintleaf},
+    # the 45 and 8 represent the width and height of the tab's padding
         "map": {"background": [("selected", robinsegg)],
                 "expand": [("selected", [2, 2, 1, 0])]}}})
 style.theme_use("tabtheme")
@@ -29,20 +29,18 @@ style.theme_use("tabtheme")
 # TAB 1
 tab1 = ttk.Frame(tab_control)
 tab_control.add(tab1, text="Staff Manager")
-tab_control.tab(tab1, padding=10) # this line keeps the labels and frames padded away from the widget's edge
-
+tab_control.tab(tab1, padding=10)  # this line keeps the labels and frames padded away from the widget's edge
 
 # This is the code inside the frame of tab 1
 label_frame = LabelFrame(tab1)
 label_frame.grid(column=0, row=0, pady=10)
 
-lbl1 = Label(label_frame, text='Staff', font=("Courier", 30), padx=10, pady=10) #padx,pady keep a border between the letters and containing element
+lbl1 = Label(label_frame, text='Staff', font=("Courier", 30), padx=10,
+             pady=10)  # padx,pady keep a border between the letters and containing element
 lbl1.grid(column=0, row=0)
 
-
-
-#staff = ["Joe", "Vince", "Andria", "Brendan"]
-#managers = ["Kathryn", "Gabriela"]
+# staff = ["Joe", "Vince", "Andria", "Brendan"]
+# managers = ["Kathryn", "Gabriela"]
 
 joe = Staff("Joe", 20.0)
 vincent = Staff("Vincent", 20.0)
@@ -56,6 +54,7 @@ gabriela.set_is_manager(True)
 
 staff = [joe, vincent, andria, brendan]
 managers = [kathryn, gabriela]
+
 
 def view_employees():
     """
@@ -251,14 +250,12 @@ view_managers.grid(column=0, row=2)
 add_staff = ttk.Button(tab1, text="Edit Staff Menu", command=staff_edit_menu)
 add_staff.grid(column=0, row=3)
 
-
-
-
 #### STAFF MENU #####
 
 staff_menu = Frame(tab1)
 side_frame = LabelFrame(tab1)
 side_frame.grid(column=2, columnspan=1, rowspan=5, row=3, padx=0, pady=0)
+
 
 ####  END STAFF MENU  ####
 
@@ -266,12 +263,10 @@ side_frame.grid(column=2, columnspan=1, rowspan=5, row=3, padx=0, pady=0)
 ### "Type of staff" label ###
 
 def display_staff_type_label(employee_or_manager):
-
     staff_label_text = StringVar()
     staff_label = Label(tab1, textvariable=staff_label_text)
     staff_label_text.set('Employees:') if employee_or_manager == 'employee' else staff_label_text.set('Managers:')
     staff_label.grid(column=2, row=2, sticky='ew')
-
 
 
 # type = StringVar()
@@ -283,6 +278,7 @@ def display_staff_type_label(employee_or_manager):
 
 lb_tasks = Listbox(side_frame)
 lb_tasks.grid(column=0, row=6, sticky='w')
+
 
 ### END Listbox ####
 
@@ -312,9 +308,6 @@ def display_footer():
     made_by_label.grid(column=0, row=0)
 
 
-
-
-
 """ 
     TO DO TASKS
     - see a list of all employees and IDS
@@ -334,8 +327,6 @@ lbl2 = Label(tab2, text='Inventory', font=("Courier", 30), padx=10, pady=10)
 lbl2.grid(column=0, row=0)
 tab_control.tab(tab2, padding=10)
 
-
 tab_control.pack(expand=1, fill='both')
 display_footer()
 window.mainloop()
-
