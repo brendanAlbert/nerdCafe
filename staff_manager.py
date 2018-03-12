@@ -2,10 +2,11 @@ from tkinter import *
 from tkinter import ttk, messagebox
 from Staff import Staff
 from inventory_manager import InventoryManager
+from coffee_sales import *
 
 window = Tk()
 window.title("Coffee Geeks Cafe")
-window.geometry('600x600')
+window.geometry('650x625')
 
 tab_control = ttk.Notebook(window)
 
@@ -330,6 +331,8 @@ tab_control.pack(expand=1, fill='both')
 inventory_mgr = InventoryManager()
 inventory_mgr.upload_produce_csv("produce.csv")
 inventory_mgr.upload_liquid_csv("liquids.csv")
+inventory_mgr.upload_drygood_csv("drygoods.csv")
+inventory_mgr.upload_meat_csv("meats.csv")
 
 
 #### Tab 2 Functions ###
@@ -347,6 +350,18 @@ def view_liquids():
         inventory_listbox.insert(END, liquid)
 
 
+def view_drygoods():
+    inventory_listbox.delete(0, END)
+    for drygood in inventory_mgr._drygoods:
+        inventory_listbox.insert(END, drygood)
+
+
+def view_meats():
+    inventory_listbox.delete(0, END)
+    for meat in inventory_mgr._meat:
+        inventory_listbox.insert(END, meat)
+
+
 ## SETUP Listbox ###
 inventory_listbox = Listbox(tab2, height=20, width=60)
 inventory_listbox.grid(column=0, columnspan=10, row=2, sticky='news', pady=20)
@@ -359,6 +374,12 @@ produce_btn.grid(column=0, row=1, sticky='w', pady=10)
 
 liquids_btn = ttk.Button(tab2, text="View Liquids", command=view_liquids)
 liquids_btn.grid(column=1, row=1, sticky='w', pady=10)
+
+drygoods_btn = ttk.Button(tab2, text="View Dry Goods", command=view_drygoods)
+drygoods_btn.grid(column=2, row=1, sticky='w', pady=10)
+
+meats_btn = ttk.Button(tab2, text="View Meats", command=view_meats)
+meats_btn.grid(column=3, row=1, sticky='w', pady=10)
 
 display_footer(tab2)
 
@@ -374,6 +395,40 @@ lbl3 = Label(tab3, text='Coffee', font=("Courier", 30), padx=10, pady=10)
 lbl3.grid(column=0, row=0, sticky='w')
 tab_control.tab(tab3, padding=10)
 tab_control.pack(expand=1, fill='both')
+
+
+### TAB 3 Functions ###
+
+
+def generate_sales_report():
+    filename = 'coffee_sales.csv'
+    report = generate_inventory_report(filename)
+    sold = compute_sales(filename)
+
+    coffee_mgr_listbox.delete(0, END)
+
+    coffee_mgr_listbox.insert(END, "Beverage, #sold")
+    coffee_mgr_listbox.insert(END, "")
+
+    for coffee, value in report.items():
+        row = f"{coffee}, {value}"
+        #row = "{:33s}{}".format(coffee, value) I DONT KNOW WHY THIS WON'T FORMAT GAAHHH
+        coffee_mgr_listbox.insert(END, row)
+
+    coffee_mgr_listbox.insert(END, "")
+    coffee_mgr_listbox.insert(END, "Number drinks sold: {}".format(sold))
+    coffee_mgr_listbox.insert(END, "Total Sales ${:.2f}".format(sold))
+
+
+## SETUP Listbox ###
+
+coffee_mgr_listbox = Listbox(tab3, height=20, width=50)
+coffee_mgr_listbox.grid(column=0, columnspan=10, row=2, sticky='news', pady=20)
+
+### Setup Coffee Manager Buttons
+
+sales_report_btn = ttk.Button(tab3, text="Generate Coffee Sold Report", command=generate_sales_report)
+sales_report_btn.grid(column=0, row=1, sticky='w', pady=10)
 
 display_footer(tab3)
 

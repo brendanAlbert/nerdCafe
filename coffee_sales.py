@@ -6,7 +6,7 @@ import random
 def create_csv():
     headers = ["Coffee", "Quantity", "Customer"]
     students = ["Mauraine", "Iguaine", "Elaine", "Avienda"]
-    coffees = ["Espresso", "Caffe Latte", "Caffe Mocha", "Rasberry Mocha", "Hot Chocolate"]
+    coffees = ["Espresso", "Caffe Latte", "Caffe Mocha", "Raspberry Mocha", "Hot Chocolate"]
 
     with open("coffee_sales.csv", "w", newline='') as f:
         # write a row of info to the csv, create a writer object
@@ -90,13 +90,15 @@ def generate_inventory_report(fname):
         # string at least 15 long, else padd it on rhs to make it 15
         # so that columns will align
 
+    return coffees
+
 
 def main():
     filename = "coffee_sales.csv"
     create_csv()
     sold = compute_sales(filename)
     print('sold=', sold)
-    # print("Total Sales ${:.2f}".format(sold))
+    print("Total Sales ${:.2f}".format(sold))
     # update_sales(filename,"Avienda")
     # compute_sales(filename)
     # generate_inventory_report(filename)
