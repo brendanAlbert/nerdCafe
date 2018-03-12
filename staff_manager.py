@@ -1,11 +1,15 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, messagebox
 
 window = Tk()
 window.title("Coffee Geeks Cafe")
 window.geometry('600x600')
 
 tab_control = ttk.Notebook(window)
+
+
+global txt_input
+global staff_menu
 
 mintleaf = "#00b894"
 robinsegg = "#00cec9"
@@ -60,10 +64,7 @@ def view_employees():
         lb_tasks.insert(END, employee)
     lb_tasks.bind('<Double-1>', lambda e: on_emp_dbl(e))
 
-    type = StringVar()
-    staff_type = Label(tab1, textvariable=type)
-    type.set('Employees:')
-    staff_type.grid(column=2, row=7, sticky='ew')
+    display_staff_type_label('employee')
 
 
 def view_managers():
@@ -77,7 +78,7 @@ def view_managers():
             on manager double click, and we pass it the manager who was clicked on.  This will open a pop-up window
             with that managers information.
 
-        The last four lines are used to display a label which identifies for the user which type of staff he or
+        The display_staff_type_label is used to display a label which identifies for the user which type of staff he or
             she is looking at in the listbox.
     """
     staff_menu.grid_forget()
@@ -86,20 +87,20 @@ def view_managers():
         lb_tasks.insert(END, employee)
     lb_tasks.bind('<Double-1>', lambda e: on_mgr_dbl(e))
 
-    type = StringVar()
-    staff_type = Label(tab1, textvariable=type)
-    type.set('Managers:')
-    staff_type.grid(column=2, row=7, sticky='ew')
+    display_staff_type_label('manager')
 
 
 def del_employee():
     """
     This function is called when the user clicks the delete employee button.
+    delete_confirm_modal() is called which pops up a window asking if the user is sure she wants to delete
+    the selected employee.
     It works by deleting the selected employee from the listbox.
     """
     employee = lb_tasks.curselection()
-    lb_tasks.delete(employee)
-    del staff[employee[0]]
+    if delete_confirm_modal(staff[employee[0]]):
+        lb_tasks.delete(employee)
+        del staff[employee[0]]
 
 
 def add_employee():
@@ -113,18 +114,28 @@ def add_employee():
         staff.append(employee)
         txt_input.delete(0, END)
 
+def delete_confirm_modal(member):
+    """
+    :param member: the name of the staff member to delete
+    :return: True if the user clicks OK, False if he/she clicks cancel
+    """
+    delete_msg = f"Are you sure you want to delete {member}?"
+    return messagebox.askokcancel("Deleting Staff Member", delete_msg, icon='warning')
 
 def del_manager():
     """
     del_manager() is the function which is called when the user selects a manager to delete and clicks the
     delete manager button.
+    delete_confirm_modal() is called which pops up a window asking if the user is sure she wants to delete
+    the selected manager.
     .curselection() returns a tuple with the first element in the tuple being an integer representing the location
     in the listbox of the selected manager.
     The chosen manager is deleted from the listbox and then deleted from the manager list.
     """
     mgr = lb_tasks.curselection()
-    lb_tasks.delete(mgr)
-    del managers[mgr[0]]
+    if delete_confirm_modal(managers[mgr[0]]):
+        lb_tasks.delete(mgr)
+        del managers[mgr[0]]
 
 
 def add_manager():
@@ -163,7 +174,7 @@ def staff_edit_menu():
     if staff_menu is None:
         staff_menu = staff_menu
     else:
-        staff_menu.grid(column=2, row=1)
+        staff_menu.grid(column=3, row=3)
 
     txt_input = Entry(staff_menu, width=15, fg='gray')
     txt_input.insert(0, 'enter name here...')
@@ -191,10 +202,7 @@ def use_mgr_btns():
     del_btn.grid(column=0, row=4, sticky='ew')
     lb_tasks.bind('<Double-1>', lambda e: on_mgr_dbl(e))
 
-    type = StringVar()
-    staff_type = Label(tab1, textvariable=type)
-    type.set('Managers:')
-    staff_type.grid(column=2, row=7, sticky='ew')
+    display_staff_type_label('manager')
 
 
 def use_employee_btns():
@@ -211,10 +219,7 @@ def use_employee_btns():
     del_btn.grid(column=0, row=4, sticky='ew')
     lb_tasks.bind('<Double-1>', lambda e: on_emp_dbl(e))
 
-    type = StringVar()
-    staff_type = Label(tab1, textvariable=type)
-    type.set('Employees:')
-    staff_type.grid(column=2, row=7, sticky='ew')
+    display_staff_type_label('employee')
 
 
 """ These are the three buttons on the left side of the Staff Manager frame."""
@@ -230,18 +235,39 @@ add_staff = ttk.Button(tab1, text="Edit Staff Menu", command=staff_edit_menu)
 add_staff.grid(column=0, row=3)
 
 
-global txt_input
-global staff_menu
+
+
+#### STAFF MENU #####
 
 staff_menu = Frame(tab1)
 side_frame = LabelFrame(tab1)
-side_frame.grid(column=2, columnspan=2, rowspan=5, row=2, padx=20, pady=20)
+side_frame.grid(column=2, columnspan=1, rowspan=5, row=3, padx=0, pady=0)
 
-type = StringVar()
-staff_type = Label(tab1, textvariable=type)
+####  END STAFF MENU  ####
+
+
+### "Type of staff" label ###
+
+def display_staff_type_label(employee_or_manager):
+
+    staff_label_text = StringVar()
+    staff_label = Label(tab1, textvariable=staff_label_text)
+    staff_label_text.set('Employees:') if employee_or_manager == 'employee' else staff_label_text.set('Managers:')
+    staff_label.grid(column=2, row=2, sticky='ew')
+
+
+
+# type = StringVar()
+# staff_type = Label(tab1, textvariable=type)
+
+##### End type of staff label ###
+
+### Listbox ####
 
 lb_tasks = Listbox(side_frame)
 lb_tasks.grid(column=0, row=6, sticky='w')
+
+### END Listbox ####
 
 
 def on_emp_dbl(e):
@@ -262,10 +288,14 @@ def on_mgr_dbl(e):
     text.pack()
 
 
-footer_frame = LabelFrame(tab1)
-footer_frame.grid(column=1, columnspan=2, row=9, pady=20)
-made_by_label = Label(footer_frame, text="Coded with ❤️ by the fine folks @ ¯\_(ツ)_/¯", pady=10)
-made_by_label.grid(column=0, row=0)
+def display_footer():
+    footer_frame = LabelFrame(tab1)
+    footer_frame.grid(column=1, columnspan=2, row=9, pady=20)
+    made_by_label = Label(footer_frame, text="Coded with ❤️ by the fine folks @ ¯\_(ツ)_/¯", pady=10)
+    made_by_label.grid(column=0, row=0)
+
+
+
 
 
 """ 
@@ -289,5 +319,6 @@ tab_control.tab(tab2, padding=10)
 
 
 tab_control.pack(expand=1, fill='both')
+display_footer()
 window.mainloop()
 
