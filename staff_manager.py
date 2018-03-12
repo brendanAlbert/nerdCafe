@@ -309,19 +309,13 @@ def display_footer(tab):
     made_by_label.grid(column=0, row=0, sticky='ew')
 
 
-""" 
-    TO DO TASKS
-    - see a list of all employees and IDS
-    - view and print an employee's schedule
-    - view and print an employees details
-    - view a csv file of employee's details ( id #, date of hire, name, etc)
-    - delete employee ( move to archived area )
-    - add a new employee
+display_footer(tab1)
 
-"""
+#### End of TAB 1, Staff Manager ######
+
+
 
 #### Start of TAB 2, Inventory Manager ######
-
 
 tab2 = ttk.Frame(tab_control)
 tab_control.add(tab2, text="Inventory Manager")
@@ -329,7 +323,6 @@ tab_control.add(tab2, text="Inventory Manager")
 lbl2 = Label(tab2, text='Inventory', font=("Courier", 30), padx=10, pady=10)
 lbl2.grid(column=0, row=0, sticky='w')
 tab_control.tab(tab2, padding=10)
-
 tab_control.pack(expand=1, fill='both')
 
 
@@ -372,8 +365,22 @@ display_footer(tab2)
 ##### End of TAB 2, Inventory Manager Tab ########
 
 
+### Start of TAB 3, Coffee Tab ###
 
-##### display footer and run app
+tab3 = ttk.Frame(tab_control)
+tab_control.add(tab3, text="Coffee Manager")
 
-display_footer(tab1)
+lbl3 = Label(tab3, text='Coffee', font=("Courier", 30), padx=10, pady=10)
+lbl3.grid(column=0, row=0, sticky='w')
+tab_control.tab(tab3, padding=10)
+tab_control.pack(expand=1, fill='both')
+
+display_footer(tab3)
+
+### End of TAB 3, Coffee Tab ###
+
+
+
+##### RUN APP
+
 window.mainloop()
