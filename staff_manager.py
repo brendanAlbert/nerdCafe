@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk, messagebox
+from Staff import Staff
 
 window = Tk()
 window.title("Coffee Geeks Cafe")
@@ -40,9 +41,21 @@ lbl1.grid(column=0, row=0)
 
 
 
-staff = ["Joe", "Vince", "Andria", "Brendan"]
-managers = ["Kathryn", "Gabriela"]
+#staff = ["Joe", "Vince", "Andria", "Brendan"]
+#managers = ["Kathryn", "Gabriela"]
 
+joe = Staff("Joe", 20.0)
+vincent = Staff("Vincent", 20.0)
+andria = Staff("Andria", 20.0)
+brendan = Staff("Brendan", 20.0)
+
+kathryn = Staff('Kathryn', 40.0)
+kathryn.set_is_manager(True)
+gabriela = Staff('Gabriela', 40.0)
+gabriela.set_is_manager(True)
+
+staff = [joe, vincent, andria, brendan]
+managers = [kathryn, gabriela]
 
 def view_employees():
     """
@@ -110,17 +123,20 @@ def add_employee():
     """
     employee = txt_input.get()
     if employee.strip() != '' and employee.strip() != 'enter name here...':
-        lb_tasks.insert(END, employee)
-        staff.append(employee)
+        new_empl = Staff(employee, 20.0)
+        lb_tasks.insert(END, new_empl)
+        staff.append(new_empl)
         txt_input.delete(0, END)
+
 
 def delete_confirm_modal(member):
     """
-    :param member: the name of the staff member to delete
+    :param member: the staff member to delete
     :return: True if the user clicks OK, False if he/she clicks cancel
     """
-    delete_msg = f"Are you sure you want to delete {member}?"
+    delete_msg = f"Are you sure you want to delete:\n\n{member}?"
     return messagebox.askokcancel("Deleting Staff Member", delete_msg, icon='warning')
+
 
 def del_manager():
     """
@@ -145,8 +161,9 @@ def add_manager():
     """
     mgr = txt_input.get()
     if mgr.strip() != '' and mgr.strip() != 'enter name here...':
-        lb_tasks.insert(END, mgr)
-        managers.append(mgr)
+        new_mgr = Staff(mgr, 40.0)
+        lb_tasks.insert(END, new_mgr)
+        managers.append(new_mgr)
         txt_input.delete(0, END)
 
 
