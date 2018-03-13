@@ -6,9 +6,9 @@ import random
 def create_csv():
     headers = ["Coffee", "Quantity", "Customer"]
     students = ["Mauraine", "Iguaine", "Elaine", "Avienda"]
-    coffees = ["Espresso", "Caffe Latte", "Caffe Mocha", "Raspberry Mocha", "Hot Chocolate"]
+    coffees = ["Neckbeardicano", "Senpai Chai", "Espresso", "Caffe Latte", "Caffe Mocha", "Raspberry Mocha", "Hot Chocolate"]
 
-    with open("coffee_sales.csv", "w", newline='') as f:
+    with open("Inventory/Coffee/coffee_sales.csv", "w", newline='') as f:
         # write a row of info to the csv, create a writer object
         writer = csv.writer(f)
         # pass it the header and iterate through the records
@@ -94,7 +94,7 @@ def generate_inventory_report(fname):
 
 
 def main():
-    filename = "coffee_sales.csv"
+    filename = "Inventory/Coffee/coffee_sales.csv"
     create_csv()
     sold = compute_sales(filename)
     print('sold=', sold)

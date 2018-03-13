@@ -1,14 +1,18 @@
 from datetime import datetime
+import csv
 
 
 class Staff:
 
     __id = 100
 
-    def __init__(self, name, wage_rate):
+    def __init__(self, name, wage_rate, given_id=0):
         self._name = name  # str
         Staff.__id += 1
-        self._id = self.__id  # int
+        if given_id == 0: # no arg was passed, so let auto generate
+            self._id = self.__id  # int
+        else:
+            self._id = given_id
         self._wage_rate = wage_rate
         self._date_hired = datetime.now().strftime("%d/%m/%y")
         self._hours_worked = 0  # Float

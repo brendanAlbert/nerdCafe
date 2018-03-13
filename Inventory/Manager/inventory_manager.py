@@ -5,7 +5,7 @@
 
 import csv
 import re
-import ingredients as ing
+from Inventory.Ingredients import ingredients as ing
 import subprocess as sub
 import os
 
@@ -481,11 +481,15 @@ class InventoryManager:
     def open_excel(self, fname):
         """
         opens a CSV file in excel if the os is windows, and in open office if Linux.
+        And numbers if Mac.
         """
         if os.name == "nt":
             res = sub.run(['cmd', '/c', 'start', fname])
         elif os.name == "posix":
-            res = sub.run(["openoffice", fname])
+            # USE THIS LINE FOR LINUX
+            #res = sub.run(["openoffice", fname])
+            # USE THIS LINE FOR MAC WITH 'Numbers" installed
+            os.system(f"open -a '/Applications/Numbers.app' '{fname}'")
 
 # def main():
 #     my_manager = InventoryManager()
@@ -515,7 +519,7 @@ class InventoryManager:
 #     #my_manager.clean_kitchen("liquids.csv", "meats.csv", "produce.csv", "15/03/18")
 #     #my_manager.print_all_ingredients()
 #     ####### test open_excel
-#     #my_manager.open_excel("meats.csv")
+#     my_manager.open_excel("Inventory/Ingredients/meats.csv")
 #
 # if __name__ == "__main__":
 #     main()

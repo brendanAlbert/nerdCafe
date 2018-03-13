@@ -1,12 +1,15 @@
+#!/usr/bin/env python3
+
 from tkinter import *
 from tkinter import ttk, messagebox
-from Staff import Staff
-from inventory_manager import InventoryManager
-from coffee_sales import *
+from Staff.Staff import Staff
+from Inventory.Manager.inventory_manager import InventoryManager
+from Inventory.Coffee.coffee_sales import *
+import pathlib
 
 window = Tk()
 window.title("Coffee Geeks Cafe")
-window.geometry('650x625')
+window.geometry('800x625')
 
 tab_control = ttk.Notebook(window)
 
@@ -41,21 +44,11 @@ lbl1 = Label(label_frame, text='Staff', font=("Courier", 30), padx=10,
              pady=10)  # padx,pady keep a border between the letters and containing element
 lbl1.grid(column=0, row=0)
 
-# staff = ["Joe", "Vince", "Andria", "Brendan"]
-# managers = ["Kathryn", "Gabriela"]
 
-joe = Staff("Joe", 20.0)
-vincent = Staff("Vincent", 20.0)
-andria = Staff("Andria", 20.0)
-brendan = Staff("Brendan", 20.0)
-
-kathryn = Staff('Kathryn', 40.0)
-kathryn.set_is_manager(True)
-gabriela = Staff('Gabriela', 40.0)
-gabriela.set_is_manager(True)
-
-staff = [joe, vincent, andria, brendan]
-managers = [kathryn, gabriela]
+##### The two staff/manager lists which are populated from the csv and hold
+#### staff in memory while the program is running
+staff = []
+managers = []
 
 
 def view_employees():
@@ -112,10 +105,12 @@ def del_employee():
     It works by deleting the selected employee from the listbox.
     """
     employee = lb_tasks.curselection()
-    if delete_confirm_modal(staff[employee[0]]):
-        lb_tasks.delete(employee)
-        del staff[employee[0]]
-
+    try:
+        if del_confirm_modal(staff[employee[0]]):
+            lb_tasks.delete(employee)
+            del staff[employee[0]]
+    except IndexError:
+        print('tried to delete without a staff member selected')
 
 def add_employee():
     """
@@ -130,7 +125,7 @@ def add_employee():
         txt_input.delete(0, END)
 
 
-def delete_confirm_modal(member):
+def del_confirm_modal(member):
     """
     :param member: the staff member to delete
     :return: True if the user clicks OK, False if he/she clicks cancel
@@ -150,9 +145,12 @@ def del_manager():
     The chosen manager is deleted from the listbox and then deleted from the manager list.
     """
     mgr = lb_tasks.curselection()
-    if delete_confirm_modal(managers[mgr[0]]):
-        lb_tasks.delete(mgr)
-        del managers[mgr[0]]
+    try:
+        if del_confirm_modal(managers[mgr[0]]):
+            lb_tasks.delete(mgr)
+            del managers[mgr[0]]
+    except IndexError:
+        print('tried to delete without a staff member selected')
 
 
 def add_manager():
@@ -206,6 +204,48 @@ def staff_edit_menu():
     mgr_btn.grid(column=0, row=1, sticky='w')
 
 
+def retrieve_staff_from_csv():
+    """
+    Retrieve the persisted employees and managers from the staff_list.csv file.
+    Fill the respective lists with the staff.
+    """
+    with open("Staff/staff_list.csv", newline='') as f:
+        reader = csv.reader(f)
+        next(reader, None)
+        print(reader)
+        for staffer in reader:
+            emp = Staff(staffer[1], staffer[2], staffer[0])
+            managers.append(emp) if staffer[3] == 'yes' else staff.append(emp)
+
+def load_staff():
+    """ Load any persisted staff on app launch """
+    try:
+        retrieve_staff_from_csv()
+    except FileNotFoundError:
+        print("file not found")
+
+
+def save_staff_to_csv():
+    """
+    save_staff_to_csv is called whenever the user taps the Save Staff to CSV button.
+    A modal pops up to inform the user the save was successful.
+    """
+
+    headers = ["StaffID", "Name", "Wagerate", "IsManager"]
+
+    with open("Staff/staff_list.csv", "w", newline='') as f:
+        # create a writer object
+        writer = csv.writer(f)
+        # pass it the header and iterate through the records
+        writer.writerow(headers)
+        for staffer in staff:
+            writer.writerow([staffer._id, staffer._name, 20.0, 'no'])
+        for mgr in managers:
+            writer.writerow([mgr._id, mgr._name, 40.0, 'yes'])
+
+        messagebox.showinfo('Save Successful!', 'Staff Successfully Saved to CSV!')
+
+
 def use_mgr_btns():
     """
     The use_mgr_btns() function is called when the Manager radio button is selected.
@@ -240,7 +280,7 @@ def use_employee_btns():
     display_staff_type_label('employee')
 
 
-""" These are the three buttons on the left side of the Staff Manager frame."""
+""" These are the four buttons on the left side of the Staff Manager frame."""
 
 style.configure('TButton', background=pure_apple, padding=6, relief=RAISED)
 view_employees = ttk.Button(tab1, text="View Employees", command=view_employees)
@@ -251,6 +291,9 @@ view_managers.grid(column=0, row=2)
 
 add_staff = ttk.Button(tab1, text="Edit Staff Menu", command=staff_edit_menu)
 add_staff.grid(column=0, row=3)
+
+save_staff = ttk.Button(tab1, text="Save Staff to CSV", command=save_staff_to_csv)
+save_staff.grid(column=0, row=4)
 
 #### STAFF MENU #####
 
@@ -265,14 +308,15 @@ side_frame.grid(column=2, columnspan=1, rowspan=5, row=3, padx=0, pady=0)
 ### "Type of staff" label ###
 
 def display_staff_type_label(employee_or_manager):
+    """
+    :param employee_or_manager: A staff member is passed in who is either an employee or manager.
+    The label above the listbox is updated to reflect which type of staff are being displayed.
+    """
     staff_label_text = StringVar()
     staff_label = Label(tab1, textvariable=staff_label_text)
     staff_label_text.set('Employees:') if employee_or_manager == 'employee' else staff_label_text.set('Managers:')
     staff_label.grid(column=2, row=2, sticky='ew')
 
-
-# type = StringVar()
-# staff_type = Label(tab1, textvariable=type)
 
 ##### End type of staff label ###
 
@@ -286,6 +330,10 @@ lb_tasks.grid(column=0, row=6, sticky='w')
 
 
 def on_emp_dbl(e):
+    """
+        :param e: e represents the employee from the listbox that is double clicked on.
+        A new Toplevel window pops up, filled with that employee's details.
+    """
     widget = e.widget
     selection = widget.curselection()
     tl = Toplevel()
@@ -295,6 +343,10 @@ def on_emp_dbl(e):
 
 
 def on_mgr_dbl(e):
+    """
+    :param e: e represents the manager from the listbox that is double clicked on.
+    A new Toplevel window pops up, filled with that manager's details.
+    """
     widget = e.widget
     selection = widget.curselection()
     tl = Toplevel()
@@ -304,6 +356,10 @@ def on_mgr_dbl(e):
 
 
 def display_footer(tab):
+    """
+    :param tab: passes either tab1, tab2 or tab3 depending on which tab the used clicked.
+    The function displays a little Label at the bottom of the frame.
+    """
     footer_frame = LabelFrame(tab)
     footer_frame.grid(column=1, columnspan=2, ipadx=20, row=9, pady=20, sticky='ew')
     made_by_label = Label(footer_frame, text="Coded with ❤️ by the fine folks @ ¯\_(ツ)_/¯", pady=10)
@@ -329,37 +385,68 @@ tab_control.pack(expand=1, fill='both')
 
 ## Inventory Manager Object
 inventory_mgr = InventoryManager()
-inventory_mgr.upload_produce_csv("produce.csv")
-inventory_mgr.upload_liquid_csv("liquids.csv")
-inventory_mgr.upload_drygood_csv("drygoods.csv")
-inventory_mgr.upload_meat_csv("meats.csv")
+inventory_mgr.upload_produce_csv("Inventory/Ingredients/produce.csv")
+inventory_mgr.upload_liquid_csv("Inventory/Ingredients/liquids.csv")
+inventory_mgr.upload_drygood_csv("Inventory/Ingredients/drygoods.csv")
+inventory_mgr.upload_meat_csv("Inventory/Ingredients/meats.csv")
 
 
 #### Tab 2 Functions ###
 
 
 def view_produce():
+    """
+    view_produce is called when the user clicks the view produce button.
+    The listbox is emptied of any previous contents, and all of the
+    produce from the inventory manager object
+    is inserted.
+    """
     inventory_listbox.delete(0, END)
     for fruit_veg in inventory_mgr._produce:
         inventory_listbox.insert(END, fruit_veg)
 
 
 def view_liquids():
+    """
+        view_liquids is called when the user clicks the view liquids button.
+        The listbox is emptied of any previous contents, and all of the
+        liquids from the inventory manager object
+        are inserted.
+     """
     inventory_listbox.delete(0, END)
     for liquid in inventory_mgr._liquids:
         inventory_listbox.insert(END, liquid)
 
 
 def view_drygoods():
+    """
+        view_drygoods is called when the user clicks the View Dry Goods button.
+        The listbox is emptied of any previous contents, and all of the
+        dry goods from the inventory manager object
+        are inserted.
+    """
     inventory_listbox.delete(0, END)
     for drygood in inventory_mgr._drygoods:
         inventory_listbox.insert(END, drygood)
 
 
 def view_meats():
+    """
+        view_meats is called when the user clicks the view meats button.
+        The listbox is emptied of any previous contents, and all of the
+        meats from the inventory manager object
+        are inserted.
+    """
     inventory_listbox.delete(0, END)
     for meat in inventory_mgr._meat:
         inventory_listbox.insert(END, meat)
+
+
+def open_file_with_excel():
+    """
+    opens the provided file using the excel-type program of the calling operating system
+    """
+    inventory_mgr.open_excel("Inventory/Ingredients/produce.csv")
 
 
 ## SETUP Listbox ###
@@ -372,14 +459,18 @@ inventory_listbox.grid(column=0, columnspan=10, row=2, sticky='news', pady=20)
 produce_btn = ttk.Button(tab2, text="View Produce", command=view_produce)
 produce_btn.grid(column=0, row=1, sticky='w', pady=10)
 
+open_excel_btn = ttk.Button(tab2, text="View Produce in Excel", command=open_file_with_excel)
+open_excel_btn.grid(column=1, row=1, sticky='w', pady=10)
+
 liquids_btn = ttk.Button(tab2, text="View Liquids", command=view_liquids)
-liquids_btn.grid(column=1, row=1, sticky='w', pady=10)
+liquids_btn.grid(column=2, row=1, sticky='w', pady=10)
 
 drygoods_btn = ttk.Button(tab2, text="View Dry Goods", command=view_drygoods)
-drygoods_btn.grid(column=2, row=1, sticky='w', pady=10)
+drygoods_btn.grid(column=3, row=1, sticky='w', pady=10)
 
 meats_btn = ttk.Button(tab2, text="View Meats", command=view_meats)
-meats_btn.grid(column=3, row=1, sticky='w', pady=10)
+meats_btn.grid(column=4, row=1, sticky='w', pady=10)
+
 
 display_footer(tab2)
 
@@ -401,7 +492,14 @@ tab_control.pack(expand=1, fill='both')
 
 
 def generate_sales_report():
-    filename = 'coffee_sales.csv'
+    """
+    generate_sales_report is called when the user clicks on the
+    Generate Coffee Sold Report button in the third tab.
+    The appropriate csv file is read and a report generated.
+    The items are inserted into the listbox in the gui for display.
+    The amount of sales are computed and displayed similarly.
+    """
+    filename = pathlib.Path('Inventory/Coffee/coffee_sales.csv')
     report = generate_inventory_report(filename)
     sold = compute_sales(filename)
 
@@ -437,5 +535,5 @@ display_footer(tab3)
 
 
 ##### RUN APP
-
+load_staff()
 window.mainloop()
